@@ -1,9 +1,9 @@
-import { PaymentsModule } from './payments.module';
-import { Transport } from '@nestjs/microservices';
+import { NotificationsModule } from './notifications.module';
 import { commonBootstrap } from '@app/common/bootstrap/bootstrap';
+import { Transport } from '@nestjs/microservices';
 
 commonBootstrap({
-  module: PaymentsModule,
+  module: NotificationsModule,
   microservicesOpt: {
     transport: Transport.TCP,
   },

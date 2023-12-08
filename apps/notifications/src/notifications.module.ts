@@ -1,23 +1,20 @@
 import { Module } from '@nestjs/common';
-import { PaymentsController } from './payments.controller';
-import { PaymentsService } from './payments.service';
-import { LoggerModule, NOTIFICATION_SERVICE } from 'libs/common';
+import { NotificationsController } from './notifications.controller';
+import { NotificationsService } from './notifications.service';
+import { LoggerModule } from 'nestjs-pino';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { NOTIFICATION_SERVICE } from 'libs/common';
+
 @Module({
   imports: [
     LoggerModule,
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
-        MONGODB_URI: Joi.string().required(),
-        MONGODB_DB: Joi.string().required(),
         HTTP_PORT: Joi.number().required(),
         TCP_PORT: Joi.number().required(),
-        STRIPE_SECRET_KEY: Joi.string().required(),
-        NOTIFICATIONS_HOST: Joi.string().required(),
-        NOTIFICATIONS_PORT: Joi.number().required(),
         ENV: Joi.string().required(),
       }),
     }),
@@ -27,15 +24,15 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         useFactory: (configService: ConfigService) => ({
           transport: Transport.TCP,
           options: {
-            host: configService.get('NOTIFICATIONS_HOST'),
-            port: configService.get('NOTIFICATIONS_PORT'),
+            host: configService.get('AUTH_HOST'),
+            port: configService.get('AUTH_PORT'),
           },
         }),
         inject: [ConfigService],
       },
     ]),
   ],
-  controllers: [PaymentsController],
-  providers: [PaymentsService],
+  controllers: [NotificationsController],
+  providers: [NotificationsService],
 })
-export class PaymentsModule {}
+export class NotificationsModule {}
